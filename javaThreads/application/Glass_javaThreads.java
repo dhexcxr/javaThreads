@@ -4,8 +4,12 @@
 //Purpose: demonstrate the use of Threads in Java
 
 package application;
-	
+
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import javafx.application.Application;
 import javafx.geometry.Insets;
@@ -18,52 +22,116 @@ import javafx.scene.layout.HBox;
 
 
 public class Glass_javaThreads extends Application {
-	
+
+	int ARRAY_LENGTH = 2000;
+	int iterator = 0;
+	Double sum = 0.0;
+	TextArea inputThreads;
 	TextArea outputResults;
-	
+
 	@Override
 	public void start(Stage primaryStage) {
 		try {
 			BorderPane mainPane = new BorderPane();
-			
+
 			// setup output, currently textArea
 			HBox output = new HBox();
 			outputResults = new TextArea();
 			output.getChildren().add(outputResults);
-			
+
 			// setup input boxes and buttons
 			HBox input = new HBox();
 			input.setPadding(new Insets(10));
 			input.setSpacing(4);
-			// TODO add button for num of threads, start button, and maybe num of nums to sum
+			// TODO add button for num of threads, start button, and maybe num of nums to
+			// sum
 			// maybe labels
-			TextArea numOfThreads = new TextArea();
-			numOfThreads.setMaxSize(256, 32);
-			numOfThreads.setWrapText(true);
-			input.getChildren().add(numOfThreads);
-			
+			inputThreads = new TextArea();
+			inputThreads.setMaxSize(256, 32);
+			inputThreads.setWrapText(true);
+			input.getChildren().add(inputThreads);
+
 			Button startButton = new Button();
 			startButton.setMaxSize(256, 32);
 			startButton.setText("Start Calculation");
 			startButton.setOnAction(event -> startCalc());
 			input.getChildren().add(startButton);
-			
+
 			mainPane.setCenter(output);
 			mainPane.setBottom(input);
-			Scene scene = new Scene(mainPane,400,400);
-			
+			Scene scene = new Scene(mainPane, 400, 400);
+
 			primaryStage.setTitle("Array Summer");
 			primaryStage.setScene(scene);
 			primaryStage.show();
-		} catch(Exception e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
-	
-	private void startCalc() {
-		outputResults.setText("This is a calling");
+
+	private void startCalc() {		
+		iterator = 0;
+		sum = 0.0;
+		
+		// build randomized array
+		long seed = java.lang.System.currentTimeMillis();
+		Random random = new Random();
+		random.setSeed(seed);
+		// generate a large list to test
+		List<Integer> intList = new ArrayList<>(ARRAY_LENGTH);
+
+		for (int i = 0; i < ARRAY_LENGTH; i++) {
+			Integer element = random.nextInt(11);
+//			intList.add(element);
+			intList.add(1);
+		}
+		
+		// create threads and do job
+		int numOfThreads = 1;
+		try {
+			numOfThreads = Integer.parseInt(inputThreads.getText());
+			if (numOfThreads < 0) {
+				throw new NumberFormatException();
+			}
+		} catch (Exception NumberFormatException) {
+			// TODO: handle exception
+			// make dialog popup to complain
+		}
+		
+		ExecutorService threadPool = Executors.newFixedThreadPool(numOfThreads);
+		
+		long arraySumStart = System.currentTimeMillis();
+		// TODO iterate through array and sum
+		for (int i = 0; i < numOfThreads; i++) {
+			threadPool.submit(new Runnable() {
+				
+				@Override
+				public void run() {
+					// TODO Auto-generated method stub
+					while (iterator < intList.size()) {
+//						sum = summer(sum, intList);
+						summer(intList);
+					}
+				}
+			});
+			
+		}
+		threadPool.shutdown();
+		
+		long arraySumEnd = System.currentTimeMillis();
+
+		outputResults.setText("This is a calling\n");
+		outputResults.setText(outputResults.getText() + "sum = " + sum + " -- time = " + (arraySumEnd - arraySumStart));
+		outputResults.setText(outputResults.getText() + "\n\n" + "iter in startCalc, adter summer: " + iterator + "\n");
+		
 	}
 	
+	private synchronized Double summer(List<Integer> array) {
+		sum += array.get(iterator);
+		iterator++;
+		return sum;
+	}
+
 	public static void main(String[] args) {
 		launch(args);
 	}
