@@ -79,7 +79,7 @@ public class Glass_javaThreads extends Application {
 		for (int i = 0; i < ARRAY_LENGTH; i++) {
 			Integer element = random.nextInt(11);
 			intList.add(element);
-//			intList.add(2);
+//			intList.add(1);
 		}
 	}
 
@@ -113,6 +113,9 @@ public class Glass_javaThreads extends Application {
 					}
 				}
 			});
+		}
+		
+		for (int i = 0; i < threads.length; i++) {
 			threads[i].start();
 		}
 		
