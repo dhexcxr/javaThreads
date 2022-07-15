@@ -8,10 +8,6 @@ package application;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
-//import java.util.concurrent.ExecutorService;
-//import java.util.concurrent.Executors;
-//import java.util.concurrent.TimeUnit;
-
 import javafx.application.Application;
 import javafx.geometry.Insets;
 import javafx.stage.Stage;
@@ -130,32 +126,6 @@ public class Glass_javaThreads extends Application {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-
-//		ExecutorService threadPool = Executors.newFixedThreadPool(numOfThreads);
-//
-//		long arraySumStart = System.currentTimeMillis();
-//		// TODO iterate through array and sum
-//		for (int i = 0; i < numOfThreads; i++) {
-//			threadPool.submit(new Runnable() {
-//
-//				@Override
-//				public void run() {
-//					// TODO Auto-generated method stub
-//					while (iterator < intList.size()) {
-//						//						sum = summer(sum, intList);
-//						summer(intList);
-//					}
-//				}
-//			});
-//
-//		}
-//		threadPool.shutdown();
-//		try {
-//			threadPool.awaitTermination(Long.MAX_VALUE, TimeUnit.MILLISECONDS);
-//		} catch (InterruptedException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
 
 		long arraySumEnd = System.currentTimeMillis();
 
