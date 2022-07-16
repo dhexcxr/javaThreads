@@ -45,7 +45,7 @@ class MyThread extends Thread {
 	
 	private long summer(List<Integer> array, int threadStartElement, int threadElements) {
 		long result = 0;
-		for (int i = threadStartElement; i < threadElements; i++) {
+		for (int i = threadStartElement; i < threadStartElement + threadElements; i++) {
 			result += array.get(i);
 		}
 		return result;
