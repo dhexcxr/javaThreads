@@ -75,6 +75,7 @@ public class Glass_javaThreads extends Application {
 		Random random = new Random();
 		random.setSeed(seed);
 		// generate a large list to test
+		
 
 		for (int i = 0; i < ARRAY_LENGTH; i++) {
 			Integer element = random.nextInt(11);
@@ -87,10 +88,9 @@ public class Glass_javaThreads extends Application {
 		iterator = 0;
 		sum = 0l;
 
-		// create threads and do job
+		// get num of threads from user input
 		int numOfThreads = 1;
 		try {
-			// get num of threads from user input
 			numOfThreads = Integer.parseInt(inputThreads.getText());
 			if (numOfThreads < 0) {
 				throw new NumberFormatException();
@@ -99,36 +99,36 @@ public class Glass_javaThreads extends Application {
 			// TODO: handle exception
 			// make dialog popup to complain
 		}
-		
-		long arraySumStart = System.currentTimeMillis();
+
+		// setup threads
 		Thread[] threads = new Thread[numOfThreads];
 		for (int i = 0; i < threads.length; i++) {
 			threads[i] = new Thread(new Runnable() {
 				@Override
 				public void run() {
-					// TODO Auto-generated method stub
 					while (iterator < intList.size()) {
-						//						sum = summer(sum, intList);
 						summer(intList);
 					}
 				}
 			});
 		}
 		
+		// do job
+		long arraySumStart = System.currentTimeMillis();
 		for (int i = 0; i < threads.length; i++) {
 			threads[i].start();
 		}
 		
 		// stop all threads
 		
-			try {
-				for (Thread thread : threads) {
+		try {
+			for (Thread thread : threads) {
 				thread.join();
-				}
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
 			}
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 
 		long arraySumEnd = System.currentTimeMillis();
 
