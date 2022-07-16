@@ -20,16 +20,17 @@ import javafx.scene.layout.HBox;
 
 class SummerThread extends Thread {
 
-	long result;
-	List<Integer> intList;
-	int threadStartElement;
-	int threadElements;	
+	private long result;
+	private List<Integer> intList;
+	private int threadStartElement;
+	private int threadElements;	
 
-	public SummerThread(List<Integer> intList, int threadStartElement, int threadElements) {
+	public SummerThread(List<Integer> intList, int threadStartElement, int numberOfElements) {
 		super();
+		this.result = 0l;
 		this.intList = intList;
 		this.threadStartElement = threadStartElement;
-		this.threadElements = threadElements;
+		this.threadElements = numberOfElements;
 	}
 
 	public long getResults() {
@@ -38,6 +39,7 @@ class SummerThread extends Thread {
 
 	@Override
 	public void run() {
+		// sum the elements of the array that we were given
 		for (int i = threadStartElement; i < threadStartElement + threadElements; i++) {
 			result += intList.get(i);
 		}				
@@ -47,10 +49,10 @@ class SummerThread extends Thread {
 
 public class Glass_javaThreads extends Application {
 
-	int ARRAY_LENGTH = 200000000;
-	List<Integer> intList = new ArrayList<>(ARRAY_LENGTH);
-	TextArea inputThreads;
-	TextArea outputResults;
+	private int ARRAY_LENGTH = 200000000;
+	private List<Integer> intList = new ArrayList<>(ARRAY_LENGTH);
+	private TextArea numberOfThreadsInput;
+	private TextArea outputResults;
 
 	@Override
 	public void start(Stage primaryStage) {
@@ -58,36 +60,37 @@ public class Glass_javaThreads extends Application {
 			BorderPane mainPane = new BorderPane();
 
 			// setup output, currently textArea
-			HBox output = new HBox();
+			HBox outputLayout = new HBox();
 			outputResults = new TextArea();
-			output.getChildren().add(outputResults);
-
+			outputLayout.getChildren().add(outputResults);
+			
 			// setup input boxes and buttons
-			HBox input = new HBox();
-			input.setPadding(new Insets(10));
-			input.setSpacing(4);
+			HBox inputLayout = new HBox();
+			inputLayout.setPadding(new Insets(10));
+			inputLayout.setSpacing(4);
 			// TODO add button for num of threads, start button, and maybe num of nums to
 				// sum
 				// maybe labels
-			inputThreads = new TextArea();
-			inputThreads.setMaxSize(256, 32);
-			inputThreads.setWrapText(true);
-			input.getChildren().add(inputThreads);
+			numberOfThreadsInput = new TextArea();
+			numberOfThreadsInput.setMaxSize(256, 32);
+			numberOfThreadsInput.setWrapText(true);
+			inputLayout.getChildren().add(numberOfThreadsInput);
 
 			Button startButton = new Button();
 			startButton.setMaxSize(256, 32);
 			startButton.setText("Start Calculation");
 			startButton.setOnAction(event -> startCalc());
-			input.getChildren().add(startButton);
+			inputLayout.getChildren().add(startButton);
 
-			mainPane.setCenter(output);
-			mainPane.setBottom(input);
+			mainPane.setCenter(outputLayout);
+			mainPane.setBottom(inputLayout);
 			Scene scene = new Scene(mainPane, 400, 400);
 
 			primaryStage.setTitle("Array Summer");
 			primaryStage.setScene(scene);
 			primaryStage.show();
 
+			// generate the large array with random numbers
 			buildArray();
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -95,17 +98,16 @@ public class Glass_javaThreads extends Application {
 	}
 
 	private void buildArray() {
-		// build randomized array
+		// prep Random with a seed
 		long seed = java.lang.System.currentTimeMillis();
 		Random random = new Random();
 		random.setSeed(seed);
-		// generate a large list to test
 		
-
+		// generate a large list with which to test
 		for (int i = 0; i < ARRAY_LENGTH; i++) {
 			Integer element = random.nextInt(11);
-//			intList.add(element);
-			intList.add(1);
+			intList.add(element);
+//			intList.add(1);			// just for testing purposes
 		}
 	}
 
@@ -115,7 +117,7 @@ public class Glass_javaThreads extends Application {
 		// get num of threads from user input
 		int numOfThreads = 1;
 		try {
-			numOfThreads = Integer.parseInt(inputThreads.getText());
+			numOfThreads = Integer.parseInt(numberOfThreadsInput.getText());
 			if (numOfThreads < 0) {
 				throw new NumberFormatException();
 			}
@@ -124,15 +126,15 @@ public class Glass_javaThreads extends Application {
 			// make dialog popup to complain
 		}
 
-		// setup threads
+		// start timer and setup threads
 		long arraySumStart = System.currentTimeMillis();
 		SummerThread[] threads = new SummerThread[numOfThreads];
-		final int threadElements = ARRAY_LENGTH / numOfThreads;
+		final int elementsPerThread = ARRAY_LENGTH / numOfThreads;
 		int threadStartElement = 0;
 		
 		for (int i = 0; i < threads.length; i++) {
-			threads[i] = new SummerThread(intList, threadStartElement, threadElements);
-			threadStartElement += threadElements;
+			threads[i] = new SummerThread(intList, threadStartElement, elementsPerThread);
+			threadStartElement += elementsPerThread;
 		}
 		
 		// start jobs
@@ -149,6 +151,7 @@ public class Glass_javaThreads extends Application {
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
+		// stop timer
 		long arraySumEnd = System.currentTimeMillis();
 
 		outputResults.setText("This is a calling\n");
