@@ -146,7 +146,7 @@ public class Glass_javaThreads extends Application {
 //			Runnable summerThread = new Runnable();
 			
 			threads[i] = new MyThread(intList, threadStartElement, threadElements);
-			threadStartElement += threadElements + 1;
+			threadStartElement += threadElements;
 		}
 		
 		// start jobs
