@@ -13,7 +13,10 @@ import javafx.geometry.Insets;
 import javafx.stage.Stage;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 
@@ -53,6 +56,7 @@ public class Glass_javaThreads extends Application {
 	private List<Integer> intList = new ArrayList<>(ARRAY_LENGTH);
 	private TextArea numberOfThreadsInput;
 	private TextArea outputResults;
+	private TableView<Glass_SumResults> outputTable;
 
 	@Override
 	public void start(Stage primaryStage) {
@@ -62,7 +66,26 @@ public class Glass_javaThreads extends Application {
 			// setup output, currently textArea
 			HBox outputLayout = new HBox();
 			outputResults = new TextArea();
-			outputLayout.getChildren().add(outputResults);
+//			outputLayout.getChildren().add(outputResults);
+			
+			
+			// TODO set widths
+			outputTable = new TableView<>();
+			TableColumn<Glass_SumResults, String> firstCol = new TableColumn<>("Number of numbers");
+			firstCol.setCellValueFactory(new PropertyValueFactory<>("nums"));
+			
+			TableColumn<Glass_SumResults, String> secondCol = new TableColumn<>("Number of threads");
+			secondCol.setCellValueFactory(new PropertyValueFactory<>("threads"));
+			
+			TableColumn<Glass_SumResults, String> thirdCol = new TableColumn<>("Enlapsed time");
+			thirdCol.setCellValueFactory(new PropertyValueFactory<>("time"));
+			
+			TableColumn<Glass_SumResults, String> fourthCol = new TableColumn<>("Sum");
+			fourthCol.setCellValueFactory(new PropertyValueFactory<>("sum"));
+			
+			outputTable.getColumns().addAll(firstCol, secondCol, thirdCol, fourthCol);
+			
+			outputLayout.getChildren().add(outputTable);
 			
 			// setup input boxes and buttons
 			HBox inputLayout = new HBox();
@@ -154,8 +177,7 @@ public class Glass_javaThreads extends Application {
 		// stop timer
 		long arraySumEnd = System.currentTimeMillis();
 
-		outputResults.setText("This is a calling\n");
-		outputResults.setText(outputResults.getText() + "sum = " + sum + " -- time = " + (arraySumEnd - arraySumStart));
+		outputTable.getItems().add(new Glass_SumResults(ARRAY_LENGTH, numOfThreads, arraySumEnd - arraySumStart, sum));
 	}
 	
 	public static void main(String[] args) {
