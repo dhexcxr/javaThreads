@@ -18,12 +18,48 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 
 
+class MyThread extends Thread {
+
+	long sum;
+	List<Integer> intList;
+	int tse;
+	int threadElements;
+	
+	
+
+	public MyThread(List<Integer> intList, int tse, int threadElements) {
+		super();
+		this.intList = intList;
+		this.tse = tse;
+		this.threadElements = threadElements;
+	}
+
+	public long getResults() {
+		return sum;
+	}
+
+	@Override
+	public void run() {
+		sum = summer(intList, tse, threadElements);				
+	}
+	
+	private long summer(List<Integer> array, int threadStartElement, int threadElements) {
+		long result = 0;
+		for (int i = threadStartElement; i < threadElements; i++) {
+			result += array.get(i);
+		}
+		return result;
+	}
+
+}
+
+
 public class Glass_javaThreads extends Application {
 
 	int ARRAY_LENGTH = 200000000;
 	int iterator = 0;
 	List<Integer> intList = new ArrayList<>(ARRAY_LENGTH);
-	Long sum = 0l;
+//	Long sum = 0l;
 	TextArea inputThreads;
 	TextArea outputResults;
 
@@ -79,14 +115,14 @@ public class Glass_javaThreads extends Application {
 
 		for (int i = 0; i < ARRAY_LENGTH; i++) {
 			Integer element = random.nextInt(11);
-			intList.add(element);
-//			intList.add(1);
+//			intList.add(element);
+			intList.add(1);
 		}
 	}
 
 	private void startCalc() {		
 		iterator = 0;
-		sum = 0l;
+		long sum = 0l;
 
 		// get num of threads from user input
 		int numOfThreads = 1;
@@ -101,20 +137,19 @@ public class Glass_javaThreads extends Application {
 		}
 
 		// setup threads
-		Thread[] threads = new Thread[numOfThreads];
+		long arraySumStart = System.currentTimeMillis();
+		MyThread[] threads = new MyThread[numOfThreads];
+		final int threadElements = ARRAY_LENGTH / numOfThreads;
+		int threadStartElement = 0;
 		for (int i = 0; i < threads.length; i++) {
-			threads[i] = new Thread(new Runnable() {
-				@Override
-				public void run() {
-					while (iterator < intList.size()) {
-						summer(intList);
-					}
-				}
-			});
+			int tse = threadStartElement;
+//			Runnable summerThread = new Runnable();
+			
+			threads[i] = new MyThread(intList, threadStartElement, threadElements);
+			threadStartElement += threadElements + 1;
 		}
 		
-		// do job
-		long arraySumStart = System.currentTimeMillis();
+		// start jobs
 		for (int i = 0; i < threads.length; i++) {
 			threads[i].start();
 		}
@@ -122,8 +157,9 @@ public class Glass_javaThreads extends Application {
 		// stop all threads
 		
 		try {
-			for (Thread thread : threads) {
+			for (MyThread thread : threads) {
 				thread.join();
+				sum += thread.getResults();
 			}
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
@@ -135,18 +171,8 @@ public class Glass_javaThreads extends Application {
 		outputResults.setText("This is a calling\n");
 		outputResults.setText(outputResults.getText() + "sum = " + sum + " -- time = " + (arraySumEnd - arraySumStart));
 		outputResults.setText(outputResults.getText() + "\n\n" + "iter in startCalc, adter summer: " + iterator + "\n");
-
 	}
-
-	private synchronized void summer(List<Integer> array) {
-		try {
-			sum += array.get(iterator);
-			iterator++;
-		} catch (Exception e) {
-			// TODO: handle exception
-		}
-	}
-
+	
 	public static void main(String[] args) {
 		launch(args);
 	}
