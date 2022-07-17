@@ -13,6 +13,7 @@ import javafx.geometry.Insets;
 import javafx.stage.Stage;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
@@ -65,6 +66,8 @@ public class Glass_javaThreads extends Application {
 
 			// setup output, currently textArea
 			HBox outputLayout = new HBox();
+			outputLayout.setPadding(new Insets(5));
+			outputLayout.setSpacing(4);
 			outputResults = new TextArea();
 //			outputLayout.getChildren().add(outputResults);
 			
@@ -73,15 +76,19 @@ public class Glass_javaThreads extends Application {
 			outputTable = new TableView<>();
 			TableColumn<Glass_SumResults, String> firstCol = new TableColumn<>("Number of numbers");
 			firstCol.setCellValueFactory(new PropertyValueFactory<>("nums"));
+			firstCol.setMinWidth(128);
 			
-			TableColumn<Glass_SumResults, String> secondCol = new TableColumn<>("Number of threads");
+			TableColumn<Glass_SumResults, String> secondCol = new TableColumn<>("Threads");
 			secondCol.setCellValueFactory(new PropertyValueFactory<>("threads"));
+			secondCol.setMinWidth(48);
 			
-			TableColumn<Glass_SumResults, String> thirdCol = new TableColumn<>("Enlapsed time");
+			TableColumn<Glass_SumResults, String> thirdCol = new TableColumn<>("Time (mS)");
 			thirdCol.setCellValueFactory(new PropertyValueFactory<>("time"));
+			thirdCol.setMinWidth(64);
 			
 			TableColumn<Glass_SumResults, String> fourthCol = new TableColumn<>("Sum");
 			fourthCol.setCellValueFactory(new PropertyValueFactory<>("sum"));
+			fourthCol.setMinWidth(96);
 			
 			outputTable.getColumns().addAll(firstCol, secondCol, thirdCol, fourthCol);
 			
@@ -94,13 +101,20 @@ public class Glass_javaThreads extends Application {
 			// TODO add button for num of threads, start button, and maybe num of nums to
 				// sum
 				// maybe labels
+			Label numberOfThreadsLabel = new Label("Enter number of threads to use:");
+			numberOfThreadsLabel.setWrapText(true);
+			numberOfThreadsLabel.setMaxWidth(128);
+			inputLayout.getChildren().add(numberOfThreadsLabel);
+			
 			numberOfThreadsInput = new TextArea();
-			numberOfThreadsInput.setMaxSize(256, 32);
+			numberOfThreadsInput.setMaxSize(192, 32);
+			numberOfThreadsInput.setMinSize(64, 32);
 			numberOfThreadsInput.setWrapText(true);
 			inputLayout.getChildren().add(numberOfThreadsInput);
 
 			Button startButton = new Button();
 			startButton.setMaxSize(256, 32);
+			startButton.setMinSize(128, 32);
 			startButton.setText("Start Calculation");
 			startButton.setOnAction(event -> startCalc());
 			inputLayout.getChildren().add(startButton);
