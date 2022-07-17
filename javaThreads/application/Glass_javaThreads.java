@@ -145,12 +145,22 @@ public class Glass_javaThreads extends Application {
 		// start timer and setup threads
 		long arraySumStart = System.currentTimeMillis();
 		Glass_SummerThread[] threads = new Glass_SummerThread[numOfThreads];
-		final int elementsPerThread = ARRAY_LENGTH / numOfThreads;
+		int elementsPerThread = ARRAY_LENGTH / numOfThreads;
 		int threadStartElement = 0;
 		
+		// account for uneven division of arrays elements between threads
+		int threadsWithExtraElements = ARRAY_LENGTH % numOfThreads;
+		if (threadsWithExtraElements != 0) {
+			elementsPerThread++;
+		}
+		
+		// divide elements between threads
 		for (int i = 0; i < threads.length; i++) {
 			threads[i] = new Glass_SummerThread(intList, threadStartElement, elementsPerThread);
 			threadStartElement += elementsPerThread;
+			if (--threadsWithExtraElements == 0) {
+				elementsPerThread--;
+			}
 		}
 		
 		// start jobs
