@@ -12,11 +12,13 @@ import javafx.application.Application;
 import javafx.geometry.Insets;
 import javafx.stage.Stage;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
@@ -81,6 +83,9 @@ public class Glass_javaThreads extends Application {
 			numberOfThreadsInput.setMaxSize(192, 32);
 			numberOfThreadsInput.setMinSize(64, 32);
 			numberOfThreadsInput.setWrapText(true);
+			numberOfThreadsInput.setText("1");
+			
+			
 			inputLayout.getChildren().add(numberOfThreadsInput);
 
 			Button startButton = new Button();
@@ -130,8 +135,11 @@ public class Glass_javaThreads extends Application {
 				throw new NumberFormatException();
 			}
 		} catch (Exception NumberFormatException) {
-			// TODO: handle exception
-			// make dialog popup to complain
+			Alert error = new Alert(AlertType.ERROR);
+			error.setTitle("Error");
+			error.setContentText("Please enter a number larger than 0.");
+			error.show();
+			return;
 		}
 
 		// start timer and setup threads
