@@ -6,6 +6,7 @@
 package application;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 import javafx.application.Application;
@@ -26,10 +27,10 @@ import javafx.scene.layout.HBox;
 
 public class Glass_javaThreads extends Application {
 
-	private int ARRAY_LENGTH = 200000000;
+	private Random random = new Random();
+	private static final int ARRAY_LENGTH = 200000000;
 	private List<Integer> intList = new ArrayList<>(ARRAY_LENGTH);
 	private TextArea numberOfThreadsInput;
-	private TextArea outputResults;
 	private TableView<Glass_SumResults> outputTable;
 
 	@Override
@@ -37,15 +38,11 @@ public class Glass_javaThreads extends Application {
 		try {
 			BorderPane mainPane = new BorderPane();
 
-			// setup output, currently textArea
+			// setup output table
 			HBox outputLayout = new HBox();
 			outputLayout.setPadding(new Insets(5));
-			outputLayout.setSpacing(4);
-			outputResults = new TextArea();
-//			outputLayout.getChildren().add(outputResults);
+			outputLayout.setSpacing(4);		
 			
-			
-			// TODO set widths
 			outputTable = new TableView<>();
 			TableColumn<Glass_SumResults, String> firstCol = new TableColumn<>("Number of numbers");
 			firstCol.setCellValueFactory(new PropertyValueFactory<>("nums"));
@@ -63,21 +60,17 @@ public class Glass_javaThreads extends Application {
 			fourthCol.setCellValueFactory(new PropertyValueFactory<>("sum"));
 			fourthCol.setMinWidth(96);
 			
-			outputTable.getColumns().addAll(firstCol, secondCol, thirdCol, fourthCol);
-			
+			outputTable.getColumns().addAll(Arrays.asList(firstCol, secondCol, thirdCol, fourthCol));
 			outputLayout.getChildren().add(outputTable);
 			
 			// setup input boxes and buttons
 			HBox inputLayout = new HBox();
 			inputLayout.setPadding(new Insets(10));
 			inputLayout.setSpacing(4);
-			// TODO add button for num of threads, start button, and maybe num of nums to
-				// sum
-				// maybe labels
+			
 			Label numberOfThreadsLabel = new Label("Enter number of threads to use:");
 			numberOfThreadsLabel.setWrapText(true);
 			numberOfThreadsLabel.setMaxWidth(128);
-			inputLayout.getChildren().add(numberOfThreadsLabel);
 			
 			numberOfThreadsInput = new TextArea();
 			numberOfThreadsInput.setMaxSize(192, 32);
@@ -85,7 +78,7 @@ public class Glass_javaThreads extends Application {
 			numberOfThreadsInput.setWrapText(true);
 			numberOfThreadsInput.setText("1");
 			
-			
+			inputLayout.getChildren().add(numberOfThreadsLabel);
 			inputLayout.getChildren().add(numberOfThreadsInput);
 
 			Button startButton = new Button();
@@ -95,6 +88,7 @@ public class Glass_javaThreads extends Application {
 			startButton.setOnAction(event -> startCalc());
 			inputLayout.getChildren().add(startButton);
 
+			// setup main pane
 			mainPane.setCenter(outputLayout);
 			mainPane.setBottom(inputLayout);
 			Scene scene = new Scene(mainPane, 400, 400);
@@ -113,14 +107,13 @@ public class Glass_javaThreads extends Application {
 	private void buildArray() {
 		// prep Random with a seed
 		long seed = java.lang.System.currentTimeMillis();
-		Random random = new Random();
 		random.setSeed(seed);
 		
 		// generate a large list with which to test
 		for (int i = 0; i < ARRAY_LENGTH; i++) {
 			Integer element = random.nextInt(11);
 			intList.add(element);
-//			intList.add(1);			// just for testing purposes
+//			intList.add(1);			// for testing purposes
 		}
 	}
 
@@ -176,10 +169,12 @@ public class Glass_javaThreads extends Application {
 			}
 		} catch (InterruptedException e) {
 			e.printStackTrace();
+			Thread.currentThread().interrupt();
 		}
 		// stop timer
 		long arraySumEnd = System.currentTimeMillis();
 
+		// add output results to table
 		outputTable.getItems().add(new Glass_SumResults(ARRAY_LENGTH, numOfThreads, arraySumEnd - arraySumStart, sum));
 	}
 	
