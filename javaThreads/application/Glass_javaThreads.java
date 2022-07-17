@@ -22,35 +22,6 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 
 
-class SummerThread extends Thread {
-
-	private long result;
-	private List<Integer> intList;
-	private int threadStartElement;
-	private int threadElements;	
-
-	public SummerThread(List<Integer> intList, int threadStartElement, int numberOfElements) {
-		super();
-		this.result = 0l;
-		this.intList = intList;
-		this.threadStartElement = threadStartElement;
-		this.threadElements = numberOfElements;
-	}
-
-	public long getResults() {
-		return result;
-	}
-
-	@Override
-	public void run() {
-		// sum the elements of the array that we were given
-		for (int i = threadStartElement; i < threadStartElement + threadElements; i++) {
-			result += intList.get(i);
-		}				
-	}
-}
-
-
 public class Glass_javaThreads extends Application {
 
 	private int ARRAY_LENGTH = 200000000;
@@ -165,12 +136,12 @@ public class Glass_javaThreads extends Application {
 
 		// start timer and setup threads
 		long arraySumStart = System.currentTimeMillis();
-		SummerThread[] threads = new SummerThread[numOfThreads];
+		Glass_SummerThread[] threads = new Glass_SummerThread[numOfThreads];
 		final int elementsPerThread = ARRAY_LENGTH / numOfThreads;
 		int threadStartElement = 0;
 		
 		for (int i = 0; i < threads.length; i++) {
-			threads[i] = new SummerThread(intList, threadStartElement, elementsPerThread);
+			threads[i] = new Glass_SummerThread(intList, threadStartElement, elementsPerThread);
 			threadStartElement += elementsPerThread;
 		}
 		
@@ -181,7 +152,7 @@ public class Glass_javaThreads extends Application {
 		
 		// stop all threads, and sum the results
 		try {
-			for (SummerThread thread : threads) {
+			for (Glass_SummerThread thread : threads) {
 				thread.join();
 				sum += thread.getResults();
 			}
