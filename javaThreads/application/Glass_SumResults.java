@@ -1,3 +1,8 @@
+//Author Name: M. Corey Glass
+//Date: 07/14/2022
+//Program Name: glass_javaThreads
+//Purpose: demonstrate the use of Threads in Java
+
 package application;
 
 public class Glass_SumResults {
